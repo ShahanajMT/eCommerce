@@ -51,7 +51,7 @@ module.exports = {
                     Description:ProDetails.Description,
                 }
             }).then((response)=>{
-                console.log(response);
+                //console.log(response);
                 resolve(response)
             })
         })
