@@ -58,8 +58,8 @@ router.post('/edit-product/:id', (req, res) => {
       if(req.files.Image) {
         let image = req.files.Image
         image.mv('./public/product-images/'+id+'.jpg')
-      }        
+      }          
   })
 })
 module.exports = router;
-  
+   
