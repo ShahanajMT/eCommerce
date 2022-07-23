@@ -146,12 +146,12 @@ module.exports = {
             resolve(count)
         })
     },
-    changeProductQuantity:({cartId, prodId, count}) => {
-        console.log(cartId, prodId);
-        count = parseInt(count)
+    changeProductQuantity:(details) => {
+        // console.log(cartId, prodId);
+        count = parseInt(details.count)
         return new Promise((resolve, reject) => {
             db.get().collection(collection.CART_COLLECTIONS)
-            .updateOne({_id:objectId(cartId),'products.item':objectId(prodId)},
+            .updateOne({_id:objectId(details.cart),'products.item':objectId(details.product)},
             {
                 $inc:{'products.$.quantity':count} 
             }
