@@ -53,7 +53,7 @@ module.exports = {
                 console.log(prodExist); 
                 if(prodExist!= -1) {
                     db.get().collection(collection.CART_COLLECTIONS)
-                    .updateOne({'products.item':objectId(prodId)},
+                    .updateOne({user:objectId(userId),'products.item':objectId(prodId)},
                     {
                         $inc:{'products.$.quantity':1} 
                     }
@@ -145,5 +145,19 @@ module.exports = {
             }
             resolve(count)
         })
-    }
+    },
+    changeProductQuantity:({cartId, prodId, count}) => {
+        console.log(cartId, prodId);
+        count = parseInt(count)
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.CART_COLLECTIONS)
+            .updateOne({_id:objectId(cartId),'products.item':objectId(prodId)},
+            {
+                $inc:{'products.$.quantity':count} 
+            }
+            ).then(() => {
+                resolve()
+            })  
+        })
+    } 
 }
