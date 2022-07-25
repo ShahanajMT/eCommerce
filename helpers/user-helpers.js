@@ -157,88 +157,48 @@ module.exports = {
         })
     },
     getTotalAmount:(userId) => {
-        // return new Promise(async (resolve, reject) => {
-        //     let total = await db.get().collection(collection.CART_COLLECTIONS).aggregate([
-        //         {
-        //             $match:{user:objectId(userId)}
-        //         },
-        //         {
-        //             $unwind:'$products'
-        //         },
-        //         {
-        //             $project:{
-        //                 item:'$products.item',
-        //                 quantity:'$products.quantity'
-        //             }
-        //         },
-                
-        //         {
-        //             $lookup:{
-        //                 from:collection.PRODUCT_COLLETIONS,
-        //                 localField:'item',
-        //                 foreignField:'_id',
-        //                 as:'product'
-        //             }
-        //         },
-        //         {
-        //             $project:{
-        //                 item:1,
-        //                 quantity:1,
-        //                 product:{$arrayElemAt:['$product',0]}
-        //             }
-        //         } ,
-        //         {
-        //             $group: {
-        //                 _id:null,
-        //                 total:{$sum: {$multiply: ['$quantity', '$product.Price']}}
-        //             }
-        //         }  
-        //     ]).toArray()   
-        //     console.log(total);
-        //     resolve(total) 
-        // })
-        return new Promise(async(res,rej)=>{
-
-            let total= await db.get().collection(collection.CART_COLLECTIONS).aggregate([
+        return new Promise(async (resolve, reject) => {
+            let total = await db.get().collection(collection.CART_COLLECTIONS).aggregate([
                 {
                     $match:{user:objectId(userId)}
                 },
                 {
                     $unwind:'$products'
-            },
-            {
-                $project:{
-                    item:'$products.item',
-                    quantity:'$products.quantity'
-                }
-            },
-            {
-                $lookup:{
-                    from:collection.PRODUCT_COLLETIONS,
-                    localField:'item',
-                    foreignField:'_id',
-                    as:'product' 
-                }
-            },
-            {
-                $project:{
-                    item:1,quantity:1,
-                    product: { $arrayElemAt:['$product',0] }
+                },
+                {
+                    $project:{
+                        item:'$products.item',
+                        quantity:'$products.quantity'
+                    }
+                },
+                {
+                    $lookup:{
+                        from:collection.PRODUCT_COLLETIONS,
+                        localField:'item',
+                        foreignField:'_id',
+                        as:'product'
+                    }
+                },
+                {
+                    $project:{
+                        item:1,
+                        quantity:1,
+                        product:{$arrayElemAt:['$product',0]}
+                    }
+                }, 
+                {
+                    $group:{
+                        _id:null,
+                        total:{$sum:{$multiply:[{'$toLong':'$quantity'}, {'$toLong':'$product.Price'}]}}
 
-                }
-
-            },
-            {
-                $group: {
-                    _id: null,
-                    total: { $sum: { $multiply: [{ '$toInt': '$quantity' }, { '$toInt': '$product.price' }] } }
-                }
-            }
-            ]).toArray() 
-            res(total[0]?.total)
-
-
+                       // [{$addFields: {"Array.field13": {$multiply:["$Array.0.field3","$field0"]}}}]
+                    }
+                }    
+            ]).toArray()   
+            console.log(total);
+            resolve(total[0].total) 
         })
+        
 
 
     

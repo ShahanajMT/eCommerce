@@ -94,7 +94,7 @@ router.post('/change-product-quantity',(req, res,next) => {
 
 router.get('/place-orders', verifyLogin,async(req, res) => {
   let total = await userHelpers.getTotalAmount(req.session.user._id)
-  res.render("user/place-orders")
+  res.render("user/place-orders",{total})
 })
 
 
